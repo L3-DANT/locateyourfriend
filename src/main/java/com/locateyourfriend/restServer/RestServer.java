@@ -32,7 +32,7 @@ public class RestServer{
 	@Consumes(MediaType.APPLICATION_JSON) 
 	public String getMessage(@QueryParam("email") String email, @QueryParam("password") String password ){
 		String message = "{Connection au serveur �tablie !}";
-		logger.log(Level.INFO, message);
+		logger.log(Level.INFO, message + "email : " + email + " password : " + password );
 		return message;
 	}
 
