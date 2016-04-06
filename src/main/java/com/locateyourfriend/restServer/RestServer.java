@@ -7,19 +7,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import com.locateyourfriend.logger.MyLogger;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Path("/bienvenue")
 public class RestServer{
 	
-	Logger logger;
-	
-	
+	Logger logger = MyLogger.getInstance();
 	
 	@GET
 	public String bienvenue()
-	{
+	{	
 		String message = "Connection au serveur �tablie !";
 		logger.log(Level.INFO, message);
 		return message;
