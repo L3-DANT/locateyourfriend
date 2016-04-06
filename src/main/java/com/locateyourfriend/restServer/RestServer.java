@@ -1,6 +1,5 @@
 package com.locateyourfriend.restServer;
 
-import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,8 +13,7 @@ import java.util.logging.Logger;
 @Path("/bienvenue")
 public class RestServer{
 	
-	
-	//Logger logger;
+	Logger logger;
 	
 	
 	
@@ -23,7 +21,7 @@ public class RestServer{
 	public String bienvenue()
 	{
 		String message = "Connection au serveur �tablie !";
-		//logger.log(Level.INFO, message);
+		logger.log(Level.INFO, message);
 		return message;
 	}
 	
@@ -32,7 +30,9 @@ public class RestServer{
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON) 
 	public String getMessage(@QueryParam("email") String email, @QueryParam("password") String password ){
-		return "{Connection au serveur �tablie !}";
+		String message = "{Connection au serveur �tablie !}";
+		logger.log(Level.INFO, message);
+		return message;
 	}
 
 }

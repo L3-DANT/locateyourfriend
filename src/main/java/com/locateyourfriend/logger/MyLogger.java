@@ -2,9 +2,9 @@ package com.locateyourfriend.logger;
 
 import java.io.IOException;
 import java.util.logging.*;
+
 import java.text.SimpleDateFormat; 
 import java.util.Date; 
-
 
 public class MyLogger {
 	
