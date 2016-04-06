@@ -9,8 +9,7 @@ import com.locateyourfriend.logger.MyLogger;
 public class Main {
 
 	public static void main(String[] args) {
-		MyLogger.setup();
-		Logger logger = Logger.getLogger("MonJournalDeLogs");
+		Logger logger = MyLogger.getInstance();
 		logger.log(Level.INFO, "Démarrage du serveur");
 	}
 
