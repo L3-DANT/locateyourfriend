@@ -8,6 +8,15 @@ import java.util.Date;
 
 public class MyLogger {
 	
+	private static Logger logger;
+	
+	public static Logger getInstance(){
+		if(logger == null){
+			logger = MyLogger.setup();
+		}
+		return logger;
+	}
+	
 	static private FileHandler fh = null; //C'est un pointeur vers notre fichier log
 	static private SimpleDateFormat f = new SimpleDateFormat("dd_MM_yy_H'h'm'm's's'");//On formate la date : 01/01/16 par exemple 
 	static private Date d = new Date(); //Ici on recupere la date du systeme pour l'incorporer au nom de notre fichier log
@@ -16,7 +25,7 @@ public class MyLogger {
 		
 	}	
 	
-	public static void setup(){
+	private static Logger setup(){
 		// Le logger correspond au journal de log qui va traiter nos logs
 		Logger logger = Logger.getLogger("MonJournalDeLogs");
 			   	
@@ -38,7 +47,7 @@ public class MyLogger {
 				
 				e.printStackTrace();
 			}
-
+			return logger;
 	}
 
 }
