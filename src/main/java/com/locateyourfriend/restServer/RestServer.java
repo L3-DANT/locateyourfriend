@@ -9,12 +9,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-<<<<<<< HEAD
 import com.google.gson.Gson;
 import com.locateyourfriend.model.Utilisateur;
-=======
 import com.locateyourfriend.logger.MyLogger;
->>>>>>> master
+
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,15 +24,9 @@ public class RestServer{
 	
 	@GET
 	public String bienvenue()
-<<<<<<< HEAD
-	{
-		String message = "Connection au serveur établie !";
-		//logger.log(Level.INFO, message);
-=======
 	{	
-		String message = "Connection au serveur �tablie !";
+		String message = "Connection au serveur établie !";
 		logger.log(Level.INFO, message);
->>>>>>> master
 		return message;
 	}
 	
@@ -42,17 +34,12 @@ public class RestServer{
 	@Path("/bienvenueJSON")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON) 
-<<<<<<< HEAD
+
 	public String getMessage(String message){
 		//String message = "{Connection au serveur établie !"+ email + password + name + firstname + "}";
 		//System.out.println(message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		logger.log(Level.INFO, u.toString());
-=======
-	public String getMessage(@QueryParam("email") String email, @QueryParam("password") String password ){
-		String message = "{Connection au serveur �tablie !}";
-		logger.log(Level.INFO, message + "email : " + email + " password : " + password );
->>>>>>> master
 		return message;
 	}
 
