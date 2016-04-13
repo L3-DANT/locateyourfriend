@@ -2,11 +2,15 @@ package com.locateyourfriend.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bson.Document;
 
 import com.locateyourfriend.daoInterface.DaoUtilisateurInterface;
+import com.locateyourfriend.logger.MyLogger;
 import com.locateyourfriend.model.Constantes;
+import com.locateyourfriend.model.Localisation;
 import com.locateyourfriend.model.Utilisateur;
 import com.locateyourfriend.model.service.UtilisateurService;
 import com.mongodb.BasicDBObject;
@@ -16,11 +20,14 @@ import com.mongodb.DBObject;
 
 public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterface {
 
+	Logger logger;
+	
 	UtilisateurService userService = new UtilisateurService();
 	
 	public DaoUtilisateur(){
 		super();
 		createTables();
+		logger = MyLogger.getInstance();
 	}
 	
 	@Override
@@ -31,19 +38,21 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 
 	@Override
 	public Utilisateur getUtilisateur(String email) {
+		logger.log(Level.INFO, "récupération d'un utilisateur : " + email);
 		DBCollection collection = dataBase.getCollection(Constantes.TABLE_USER);
-		DBObject userDb = collection.findOne(new Document("email", email));
+		DBObject userDb = collection.findOne(new BasicDBObject(Constantes.COLONNE_EMAIL, email));
 		Utilisateur user = new Utilisateur();
 		user.setEmail(userDb.get(Constantes.COLONNE_EMAIL).toString());
 		user.setNom(userDb.get(Constantes.COLONNE_NOM).toString());
 		user.setPrenom(userDb.get(Constantes.COLONNE_PRENOM).toString());
 		user.setMotDePasse(userDb.get(Constantes.COLONNE_MDP).toString());
 		user.setLocalisation(userDb.get(Constantes.COLONNE_LOCALISATION).toString());
-		return null;
+		return user;
 	}
 
 	@Override
 	public Utilisateur addUser(Utilisateur util) {
+		logger.log(Level.INFO, "insertion d'un utilisateur : " + util.getEmail());
 		DBCollection collection = dataBase.getCollection(Constantes.TABLE_USER);
 		BasicDBObject userDb = userService.userToDataBaseObject(util);
 		collection.insert(userDb);
@@ -67,45 +76,16 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		collection.createIndex(Constantes.COLONNE_AMI_CIBLE);
 	}
 
-	
-	/*
-	 * public static void main(String [] args){
-		Test test = new Test();
-		Mongo mongo = new Mongo();
-		DB db = mongo.getDB("locate");
-		DBCollection collection = db.getCollection("message");
-		List<BasicDBObject> doc = new ArrayList<BasicDBObject>();
-		doc.add(new BasicDBObject("message", "yo 1"));
-		doc.add(new BasicDBObject("message", "yi"));
-		doc.add(new BasicDBObject("message", "yo 2"));
-		doc.add(new BasicDBObject("message", "ya"));
-		doc.add(new BasicDBObject("message", "yo 3"));
-		doc.add(new BasicDBObject("message", "toto"));
-		doc.add(new BasicDBObject("message", "tata"));
-		collection.insert(doc);
-		System.out.println(test.getMessages(collection, "yo"));		
-	}
-	
-	public String getMessages(DBCollection coll, String message){
-		DBCursor cursor = coll.find();
-		StringBuilder retour = new StringBuilder();
-		String currentMessage;
-		try{
-			while(cursor.hasNext()){
-				currentMessage = (String) cursor.next().get("message");
-				if(currentMessage.contains(message)){
-					retour = retour.append(currentMessage + "; ");
-				}
-			}
-		}catch(Exception e){
-			System.out.println(e);
-		}finally{
-			cursor.close();
+	public static void main(String[] args){
+		DaoUtilisateurInterface daoUtilisateur = new DaoUtilisateur();
+		Utilisateur user = new Utilisateur("robin", "tritan", "tristan.robin1@gmail.com", "test");
+		daoUtilisateur.addUser(user);
+		Utilisateur userEnRetour = daoUtilisateur.getUtilisateur(user.getEmail());
+		if(user.equals(userEnRetour)){
+			MyLogger.getInstance().log(Level.INFO, "test réussit");
 		}
-		if(retour.length() == 0){
-			return "non-trouve";
+		else{
+			MyLogger.getInstance().log(Level.INFO, "test raté");
 		}
-		return retour.toString();
 	}
-	 */
 }

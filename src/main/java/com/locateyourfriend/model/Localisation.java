@@ -8,6 +8,11 @@ public class Localisation {
 		super();
 	}
 	
+	public Localisation(Float longitude, Float latitude){
+		this.longitude = longitude;
+		this.latitude = latitude;
+	}
+	
 	public Localisation(String stringLocationToParse){
 		super();
 		String longitudeLatitude[] =  stringLocationToParse.replace(",", " ").split(" ");
@@ -16,7 +21,10 @@ public class Localisation {
 	}
 	
 	public String toString(){
-		return latitude.toString() + "," + longitude.toString();
+		if(latitude != null && longitude != null){
+			return latitude.toString() + "," + longitude.toString();
+		}
+		return "";
 	}
 	
 }
