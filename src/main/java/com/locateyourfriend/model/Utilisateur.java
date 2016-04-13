@@ -15,10 +15,33 @@ public class Utilisateur {
 		mesAmis = new Amis();
 	}
 	
+	public Utilisateur(String nom, String prenom, String email, String motDePasse, Localisation localisation){
+		super();
+		this.email = email;
+		this.motDePasse = motDePasse;
+		mesAmis = new Amis();
+		this.prenom = prenom;
+		this.nom = nom;
+		this.localisation = localisation;
+	}
+	
+	public Utilisateur(String nom, String prenom, String email, String motDePasse){
+		super();
+		this.email = email;
+		this.motDePasse = motDePasse;
+		mesAmis = new Amis();
+		this.prenom = prenom;
+		this.nom = nom;
+		localisation = new Localisation();
+	}
+	
 	public Utilisateur(){
 		super();
 	}
 	
+	public boolean equals(Utilisateur user){
+		return this.email.equals(user.getEmail());
+	}
 	public void ajouterAmi(Utilisateur nouvelAmis){
 		mesAmis.ajouterAmi(nouvelAmis);
 	}
