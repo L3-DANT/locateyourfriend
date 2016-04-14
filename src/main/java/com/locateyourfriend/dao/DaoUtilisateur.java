@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 import org.bson.Document;
 
+import com.google.gson.Gson;
+import com.locateyourfriend.daoInterface.DaoAmisInterface;
 import com.locateyourfriend.daoInterface.DaoUtilisateurInterface;
 import com.locateyourfriend.logger.MyLogger;
 import com.locateyourfriend.model.Constantes;
@@ -17,17 +19,18 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 
 public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterface {
 
-	Logger logger;
+	DaoAmisInterface daoAmis;
 	
 	UtilisateurService userService = new UtilisateurService();
 	
 	public DaoUtilisateur(){
 		super();
 		createTables();
-		logger = MyLogger.getInstance();
+		daoAmis = new DaoAmis();
 	}
 	
 	@Override
@@ -41,12 +44,8 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		logger.log(Level.INFO, "récupération d'un utilisateur : " + email);
 		DBCollection collection = dataBase.getCollection(Constantes.TABLE_USER);
 		DBObject userDb = collection.findOne(new BasicDBObject(Constantes.COLONNE_EMAIL, email));
-		Utilisateur user = new Utilisateur();
-		user.setEmail(userDb.get(Constantes.COLONNE_EMAIL).toString());
-		user.setNom(userDb.get(Constantes.COLONNE_NOM).toString());
-		user.setPrenom(userDb.get(Constantes.COLONNE_PRENOM).toString());
-		user.setMotDePasse(userDb.get(Constantes.COLONNE_MDP).toString());
-		user.setLocalisation(userDb.get(Constantes.COLONNE_LOCALISATION).toString());
+		Utilisateur user = gson.fromJson(userDb.toString(), Utilisateur.class);
+		//user.setMesAmis(daoAmis.getFriendsByUser(user.getEmail()));
 		return user;
 	}
 
@@ -54,13 +53,10 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 	public Utilisateur addUser(Utilisateur util) {
 		logger.log(Level.INFO, "insertion d'un utilisateur : " + util.getEmail());
 		DBCollection collection = dataBase.getCollection(Constantes.TABLE_USER);
-		BasicDBObject userDb = userService.userToDataBaseObject(util);
+		BasicDBObject userDb = (BasicDBObject)JSON.parse(gson.toJson(util));
 		collection.insert(userDb);
 		collection = dataBase.getCollection(Constantes.TABLE_JOINTURE_AMIS);
-		for(Utilisateur ami : util.getMesAmis().getList()){
-			BasicDBObject jointure = new BasicDBObject(util.getEmail(), ami.getEmail());
-			collection.insert(jointure);
-		}
+		//daoAmis.insertFriendsByUser(util.getEmail(), util.getMesAmis());
 		return util;
 	}
 	
@@ -74,6 +70,11 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		collection = dataBase.getCollection(Constantes.TABLE_JOINTURE_AMIS);
 		collection.createIndex(Constantes.COLONNE_AMI_ID);
 		collection.createIndex(Constantes.COLONNE_AMI_CIBLE);
+	}
+	
+	public void emptyTable(){
+		DBCollection collection = dataBase.getCollection(Constantes.TABLE_USER);
+		collection.drop();
 	}
 
 	public static void main(String[] args){
