@@ -13,6 +13,7 @@ public class Utilisateur {
 		this.email = email;
 		this.motDePasse = motDePasse;
 		mesAmis = new Amis();
+		localisation = new Localisation();
 	}
 	
 	public Utilisateur(String nom, String prenom, String email, String motDePasse, Localisation localisation){

@@ -9,4 +9,6 @@ public interface DaoUtilisateurInterface {
 	public Utilisateur getUtilisateur(String email);
 	
 	public Utilisateur addUser(Utilisateur util);
+	
+	public void emptyTable();
 }

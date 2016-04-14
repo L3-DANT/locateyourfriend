@@ -17,4 +17,8 @@ public class Amis {
 	public List<Utilisateur> getList(){
 		return listUtil;
 	}
+	
+	public void setList(List<Utilisateur> listUtil){
+		this.listUtil = listUtil;
+	}
 }
