@@ -9,6 +9,7 @@ import com.locateyourfriend.daoInterface.DaoAmisInterface;
 import com.locateyourfriend.model.Amis;
 import com.locateyourfriend.model.Constantes;
 import com.locateyourfriend.model.Utilisateur;
+import com.locateyourfriend.model.UtilisateurDTO;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -25,9 +26,9 @@ public class DaoAmis extends DaoAbstract implements DaoAmisInterface {
 		logger.log(Level.INFO, "récupération d'un utilisateur : " + username);
 		DBCollection collection = dataBase.getCollection(Constantes.TABLE_USER);
 		DBCursor userDb = collection.find(new BasicDBObject(Constantes.COLONNE_EMAIL, username));
-		List<Utilisateur> listeUser = new ArrayList<Utilisateur>();
+		List<UtilisateurDTO> listeUser = new ArrayList<UtilisateurDTO>();
 		while(userDb.hasNext()){
-			listeUser.add(gson.fromJson(userDb.toString(), Utilisateur.class));
+			listeUser.add(gson.fromJson(userDb.next().toString(), UtilisateurDTO.class));
 		}
 		Amis amis = new Amis();
 		amis.setList(listeUser);
@@ -35,12 +36,10 @@ public class DaoAmis extends DaoAbstract implements DaoAmisInterface {
 	}
 
 	@Override
-	public void insertFriendsByUser(String username, Amis listeAmis) {
+	public void insertFriendship(String user1Name, String user2Name) {
 		DBCollection collection = dataBase.getCollection(Constantes.COLONNE_AMI_CIBLE);
-		for(Utilisateur ami : listeAmis.getList()){
-			BasicDBObject jointure = new BasicDBObject(username, ami.getEmail());
-			collection.insert(jointure);
-		}
+		BasicDBObject jointure = new BasicDBObject(user1Name, user2Name);
+		collection.insert(jointure);
 	}
 
 }

@@ -5,6 +5,6 @@ import com.locateyourfriend.model.Amis;
 public interface DaoAmisInterface {
 	
 	public Amis getFriendsByUser(String username);
-	
-	public void insertFriendsByUser(String username, Amis listeAmis);
+
+	void insertFriendship(String user1Name, String user2Name);
 }

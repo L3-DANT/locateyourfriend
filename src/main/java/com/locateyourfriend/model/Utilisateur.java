@@ -40,6 +40,17 @@ public class Utilisateur {
 		super();
 	}
 	
+	public Utilisateur(UtilisateurDTO utilisateurDTO) {
+		super();
+		this.prenom = utilisateurDTO.getPrenom();
+		this.nom = utilisateurDTO.getNom();
+		this.email = utilisateurDTO.getEmail();
+		this.prenom = utilisateurDTO.getPrenom();
+		this.localisation = utilisateurDTO.getLocalisationObject();
+		mesAmis = new Amis();
+		motDePasse = "";
+	}
+
 	public boolean equals(Utilisateur user){
 		return this.email.equals(user.getEmail());
 	}
@@ -49,6 +60,10 @@ public class Utilisateur {
 	
 	public String getLocalisation(){
 		return localisation.toString(); 
+	}
+	
+	public Localisation getLocalisationObject(){
+		return localisation; 
 	}
 
 	public String getNom() {

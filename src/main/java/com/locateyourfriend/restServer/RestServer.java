@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
 import com.locateyourfriend.model.Utilisateur;
+import com.locateyourfriend.model.service.UtilisateurService;
 import com.locateyourfriend.dao.DaoUtilisateur;
 import com.locateyourfriend.daoInterface.DaoUtilisateurInterface;
 import com.locateyourfriend.logger.MyLogger;
@@ -19,10 +20,11 @@ import com.locateyourfriend.logger.MyLogger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Path("/bienvenue")
+@Path("/appli")
 public class RestServer{
 	
 	Logger logger = MyLogger.getInstance();
+	UtilisateurService utilisateurService = new UtilisateurService();
 	
 	@GET
 	public String bienvenue()
@@ -33,19 +35,15 @@ public class RestServer{
 	}
 	
 	@POST
-	@Path("/bienvenueJSON")
+	@Path("/inscription")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON) 
-	public Utilisateur getMessage(String message){
-		//String message = "{Connection au serveur Ã©tablie !"+ email + password + name + firstname + "}";
-		//System.out.println(message);
+	public String getMessage(String message){
+		logger.log(Level.INFO, "message reçus : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
-		DaoUtilisateurInterface daoUtilisateur = new DaoUtilisateur();
-		daoUtilisateur.addUser(u);
-		String email = u.getEmail();
-		u = daoUtilisateur.getUtilisateur(email);
+		u = utilisateurService.insertUser(u.getNom(), u.getPrenom(), u.getEmail(), u.getMotDePasse());
 		logger.log(Level.INFO, "retour utilisateur après passage base");
-		return u;
+		return new Gson().toJson(u);
 	}
 
 }
