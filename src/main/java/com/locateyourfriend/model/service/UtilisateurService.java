@@ -57,6 +57,7 @@ public class UtilisateurService {
 		daoAmis.beginTransaction();
 		daoUtilisateur.beginTransaction();
 		Utilisateur user = daoUtilisateur.getUtilisateur(email);
+		System.out.println("user récupéré : " + user);
 		user.setMesAmis(daoAmis.getFriendsByUser(user.getEmail()));
 		daoAmis.close();
 		daoUtilisateur.close();
@@ -75,7 +76,7 @@ public class UtilisateurService {
 		user1.ajouterAmi(user2);
 		user2.ajouterAmi(user1);
 		daoAmis.beginTransaction();
-		daoAmis.insertFriendship(user1.getNom(), user2.getNom());
+		daoAmis.insertFriendship(user1.getEmail(), user2.getEmail());
 		daoAmis.close();
 	}
 	
