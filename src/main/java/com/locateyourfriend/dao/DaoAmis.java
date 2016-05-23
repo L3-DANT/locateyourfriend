@@ -1,7 +1,6 @@
 package com.locateyourfriend.dao;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -11,11 +10,6 @@ import com.locateyourfriend.daoInterface.DaoAmisInterface;
 import com.locateyourfriend.model.Amis;
 import com.locateyourfriend.model.Constantes;
 import com.locateyourfriend.model.UtilisateurDTO;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 
@@ -34,7 +28,7 @@ public class DaoAmis extends DaoAbstract implements DaoAmisInterface {
 		List<UtilisateurDTO> listeUser = new ArrayList<UtilisateurDTO>();
 		try (MongoCursor<Document> cursor = collection.find().iterator()) {
 		    while (cursor.hasNext()) {
-		        Document doc = cursor.next();
+		       Document doc = cursor.next();
 		       if( doc.getString(Constantes.COLONNE_AMI_CIBLE).equals(username)){
 		    	   listeUser.add(new UtilisateurDTO(daoUtilisateur.getUtilisateur(doc.getString(Constantes.COLONNE_AMI_ID))));
 		       }

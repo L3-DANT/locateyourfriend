@@ -2,13 +2,9 @@ package com.locateyourfriend.dao;
 
 import java.util.logging.Logger;
 
-import javax.xml.crypto.Data;
-
 import com.google.gson.Gson;
 import com.locateyourfriend.logger.MyLogger;
 import com.locateyourfriend.model.Constantes;
-import com.mongodb.DB;
-import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
@@ -39,7 +35,7 @@ public class DaoAbstract {
 	}
 	
 	public void close(){
-		mongoDatabase.drop();
+		//mongoDatabase.drop();
 		//mongo.close();
 	}
 

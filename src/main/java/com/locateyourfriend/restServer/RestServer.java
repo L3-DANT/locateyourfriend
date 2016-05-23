@@ -1,19 +1,15 @@
 package com.locateyourfriend.restServer;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
 import com.locateyourfriend.model.Utilisateur;
 import com.locateyourfriend.model.service.UtilisateurService;
-import com.locateyourfriend.dao.DaoUtilisateur;
-import com.locateyourfriend.daoInterface.DaoUtilisateurInterface;
 import com.locateyourfriend.logger.MyLogger;
 
 

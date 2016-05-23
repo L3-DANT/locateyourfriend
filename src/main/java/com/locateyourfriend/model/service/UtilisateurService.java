@@ -57,7 +57,7 @@ public class UtilisateurService {
 		daoAmis.beginTransaction();
 		daoUtilisateur.beginTransaction();
 		Utilisateur user = daoUtilisateur.getUtilisateur(email);
-		System.out.println("user récupéré : " + user);
+		System.out.println("user récupéré : " + user.getNom());
 		user.setMesAmis(daoAmis.getFriendsByUser(user.getEmail()));
 		daoAmis.close();
 		daoUtilisateur.close();

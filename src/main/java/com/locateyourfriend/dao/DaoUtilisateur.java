@@ -11,12 +11,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.util.JSON;
 
 public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterface {
-
-	
-	//UtilisateurService userService = new UtilisateurService();
 	
 	public DaoUtilisateur(){
 		super();
@@ -33,7 +29,8 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		if(userDb.first() == null){
 			return null;
 		}
-		Utilisateur user = gson.fromJson(userDb.first().toJson(), Utilisateur.class);
+		Document doc = userDb.first();
+		Utilisateur user = new Utilisateur(doc.getString(Constantes.COLONNE_NOM), doc.getString(Constantes.COLONNE_PRENOM), doc.getString(Constantes.COLONNE_EMAIL), doc.getString(Constantes.COLONNE_MDP));
 		return user;
 	}
 
@@ -46,7 +43,6 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		userDb.append(Constantes.COLONNE_NOM, util.getNom());
 		userDb.append(Constantes.COLONNE_PRENOM, util.getPrenom());
 		userDb.append(Constantes.COLONNE_MDP, util.getMotDePasse());
-		userDb.append(Constantes.COLONNE_LOCALISATION, util.getLocalisation());
 		collection.insertOne(userDb);
 		return util;
 	}

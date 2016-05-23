@@ -26,13 +26,23 @@ public class Utilisateur {
 		this.localisation = localisation;
 	}
 	
+	public Utilisateur(String nom, String prenom, String email, String motDePasse, String localisation){
+		super();
+		this.nom = nom;
+		this.prenom = prenom;
+		this.email = email;
+		this.motDePasse = motDePasse;
+		this.localisation = new Localisation(localisation);
+		mesAmis = new Amis();
+	}
+	
 	public Utilisateur(String nom, String prenom, String email, String motDePasse){
 		super();
+		this.nom = nom;
+		this.prenom = prenom;
 		this.email = email;
 		this.motDePasse = motDePasse;
 		mesAmis = new Amis();
-		this.prenom = prenom;
-		this.nom = nom;
 		localisation = new Localisation();
 	}
 	
