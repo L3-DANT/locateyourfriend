@@ -9,7 +9,9 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
 import com.locateyourfriend.model.Utilisateur;
+import com.locateyourfriend.model.service.ServiceException;
 import com.locateyourfriend.model.service.UtilisateurService;
+import com.mongodb.MongoException;
 import com.locateyourfriend.logger.MyLogger;
 
 
@@ -22,24 +24,62 @@ public class RestServer{
 	Logger logger = MyLogger.getInstance();
 	UtilisateurService utilisateurService = new UtilisateurService();
 	
+	/**
+	 * Fonction de test
+	 * @return
+	 */
 	@GET
+	@Path("/test")
 	public String bienvenue()
 	{	
-		String message = "Connection au serveur Ã©tablie !";
+		String message = "Connection au serveur établie !";
 		logger.log(Level.INFO, message);
 		return message;
 	}
 	
+	/**
+	 * Fonction permettant l'inscription de membres
+	 * 
+	 * Si une exception est levée lors de l'insertion en base, un logg est enregistré au niveau de l'utilisateurService.
+	 * Un message d'erreur est ensuite envoyé à l'utilisateur
+	 * @param message
+	 * @return
+	 */
 	@POST
 	@Path("/inscription")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON) 
-	public String getMessage(String message){
+	public String inscription(String message){
 		logger.log(Level.INFO, "message reçus : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
-		u = utilisateurService.insertUser(u.getNom(), u.getPrenom(), u.getEmail(), u.getMotDePasse());
+		try{
+			u = utilisateurService.insertUser(u.getNom(), u.getPrenom(), u.getEmail(), u.getMotDePasse());
+		} catch(MongoException e){
+			return new Gson().toJson("L'insertion de l'utilisateur a échouée");
+		} catch (ServiceException e) {
+			return new Gson().toJson(e.getErrorMessage());
+		}
 		logger.log(Level.INFO, "retour utilisateur après passage base");
 		return new Gson().toJson(u);
 	}
+	
+	/*@POST
+	@Path("/inscription")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String locationReceiving(String message){
+		logger.log(Level.INFO, "message reçus : " + message);
+		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
+		try{
+			u = utilisateurService.insertUser(u.getNom(), u.getPrenom(), u.getEmail(), u.getMotDePasse());
+		} catch(MongoException e){
+			return new Gson().toJson("L'insertion de l'utilisateur a échouée");
+		} catch (ServiceException e) {
+			return new Gson().toJson(e.getErrorMessage());
+		}
+		for
+		return "yolo";
+	}*/
+	
 
 }

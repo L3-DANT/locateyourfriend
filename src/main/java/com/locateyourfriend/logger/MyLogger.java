@@ -9,7 +9,7 @@ import java.util.Date;
 public class MyLogger {
 	
 	private static Logger logger;
-	
+
 	public static Logger getInstance(){
 		if(logger == null){
 			logger = MyLogger.setup();

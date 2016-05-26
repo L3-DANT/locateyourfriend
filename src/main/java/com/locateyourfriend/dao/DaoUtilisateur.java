@@ -1,5 +1,7 @@
 package com.locateyourfriend.dao;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import org.bson.Document;
 
@@ -11,16 +13,24 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 
 public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterface {
-	
+
+	/**
+	 * L'initialisation du daoUtilisateurs permet la création des tables de la base de données
+	 * 
+	 * TODO : externaliser ces fonction dans un sous-programme 
+	 */
 	public DaoUtilisateur(){
 		super();
-		beginTransaction();
 		createTables();
-		close();
 	}
 
+	
+	/**
+	 * Permet de récupérer un utilisateur en fonction de son adresse email qui sert d'identifiant
+	 */
 	@Override
 	public Utilisateur getUtilisateur(String email) throws MongoException{
 		logger.log(Level.INFO, "récupération d'un utilisateur : " + email);
@@ -34,6 +44,9 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		return user;
 	}
 
+	/**
+	 * Ajoute un utilisateur à la base de données, il est retourné à la fin du traitement.
+	 */
 	@Override
 	public Utilisateur addUser(Utilisateur util) throws MongoException{
 		logger.log(Level.INFO, "insertion d'un utilisateur : " + util.getEmail());
@@ -46,7 +59,7 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		collection.insertOne(userDb);
 		return util;
 	}
-	
+
 	public void createTables() throws MongoException{
 		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_USER);
 		collection.createIndex(new BasicDBObject(Constantes.COLONNE_EMAIL, 1));
@@ -58,12 +71,34 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		collection.createIndex(new BasicDBObject(Constantes.COLONNE_AMI_ID, 1));
 		collection.createIndex(new BasicDBObject(Constantes.COLONNE_AMI_CIBLE, 2));
 	}
-	
+
 	public void emptyTable() throws MongoException{
 		mongoDatabase.getCollection(Constantes.TABLE_USER).drop();
 		mongoDatabase.getCollection(Constantes.TABLE_JOINTURE_AMIS).drop();
 	}
-
+	
+	/**
+	 * Permet de récupérer tous les utilisateurs de la base de données
+	 */
+	@Override
+	public List<Utilisateur> getUtilisateurs()throws MongoException {
+		logger.log(Level.INFO, "récupération des utilisateurs");
+		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_USER);
+		MongoCursor<Document> userDb = collection.find().iterator();
+		ArrayList<Utilisateur> listeUser = new ArrayList<Utilisateur>();
+		/**
+		 * Chaque next() représente un utilisateur stocké en base de données
+		 */
+		while(userDb.hasNext()){
+			Document doc = userDb.next();
+			listeUser.add(new Utilisateur(doc.getString(Constantes.COLONNE_NOM), doc.getString(Constantes.COLONNE_PRENOM), doc.getString(Constantes.COLONNE_EMAIL), doc.getString(Constantes.COLONNE_MDP)));
+		}
+		return listeUser;
+	}
+	
+	/**
+	 * Main pour tests
+	 */
 	public static void main(String[] args){
 		DaoUtilisateurInterface daoUtilisateur = new DaoUtilisateur();
 		Utilisateur user = new Utilisateur("robin", "tritan", "tristan.robin1@gmail.com", "test");
