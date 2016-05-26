@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Amis {
-	private List<Utilisateur> listUtil;
+	private List<UtilisateurDTO> listUtil;
 	
 	public Amis(){
-		listUtil = new ArrayList<Utilisateur>();
+		listUtil = new ArrayList<UtilisateurDTO>();
 	}
 
 	public void ajouterAmi(Utilisateur nouvelAmis) {
-		listUtil.add(nouvelAmis);		
+		listUtil.add(new UtilisateurDTO(nouvelAmis));		
 	}
 	
-	public List<Utilisateur> getList(){
+	public List<UtilisateurDTO> getList(){
 		return listUtil;
 	}
 	
-	public void setList(List<Utilisateur> listUtil){
+	public void setList(List<UtilisateurDTO> listUtil){
 		this.listUtil = listUtil;
 	}
 }

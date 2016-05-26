@@ -3,80 +3,102 @@ package com.locateyourfriend.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.bson.Document;
 
-import com.google.gson.Gson;
-import com.locateyourfriend.daoInterface.DaoAmisInterface;
 import com.locateyourfriend.daoInterface.DaoUtilisateurInterface;
 import com.locateyourfriend.logger.MyLogger;
 import com.locateyourfriend.model.Constantes;
-import com.locateyourfriend.model.Localisation;
 import com.locateyourfriend.model.Utilisateur;
-import com.locateyourfriend.model.service.UtilisateurService;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
+import com.mongodb.MongoException;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 
 public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterface {
 
-	DaoAmisInterface daoAmis;
-	
-	UtilisateurService userService = new UtilisateurService();
-	
+	/**
+	 * L'initialisation du daoUtilisateurs permet la création des tables de la base de données
+	 * 
+	 * TODO : externaliser ces fonction dans un sous-programme 
+	 */
 	public DaoUtilisateur(){
 		super();
 		createTables();
-		daoAmis = new DaoAmis();
-	}
-	
-	@Override
-	public boolean findUtilisateur(String email) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
+	
+	/**
+	 * Permet de récupérer un utilisateur en fonction de son adresse email qui sert d'identifiant
+	 */
 	@Override
-	public Utilisateur getUtilisateur(String email) {
+	public Utilisateur getUtilisateur(String email) throws MongoException{
 		logger.log(Level.INFO, "récupération d'un utilisateur : " + email);
-		DBCollection collection = dataBase.getCollection(Constantes.TABLE_USER);
-		DBObject userDb = collection.findOne(new BasicDBObject(Constantes.COLONNE_EMAIL, email));
-		Utilisateur user = gson.fromJson(userDb.toString(), Utilisateur.class);
-		//user.setMesAmis(daoAmis.getFriendsByUser(user.getEmail()));
+		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_USER);
+		FindIterable<Document> userDb = collection.find(new BasicDBObject(Constantes.COLONNE_EMAIL, email));
+		if(userDb.first() == null){
+			return null;
+		}
+		Document doc = userDb.first();
+		Utilisateur user = new Utilisateur(doc.getString(Constantes.COLONNE_NOM), doc.getString(Constantes.COLONNE_PRENOM), doc.getString(Constantes.COLONNE_EMAIL), doc.getString(Constantes.COLONNE_MDP));
 		return user;
 	}
 
+	/**
+	 * Ajoute un utilisateur à la base de données, il est retourné à la fin du traitement.
+	 */
 	@Override
-	public Utilisateur addUser(Utilisateur util) {
+	public Utilisateur addUser(Utilisateur util) throws MongoException{
 		logger.log(Level.INFO, "insertion d'un utilisateur : " + util.getEmail());
-		DBCollection collection = dataBase.getCollection(Constantes.TABLE_USER);
-		BasicDBObject userDb = (BasicDBObject)JSON.parse(gson.toJson(util));
-		collection.insert(userDb);
-		collection = dataBase.getCollection(Constantes.TABLE_JOINTURE_AMIS);
-		//daoAmis.insertFriendsByUser(util.getEmail(), util.getMesAmis());
+		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_USER);
+		Document userDb = new Document();
+		userDb.append(Constantes.COLONNE_EMAIL, util.getEmail());
+		userDb.append(Constantes.COLONNE_NOM, util.getNom());
+		userDb.append(Constantes.COLONNE_PRENOM, util.getPrenom());
+		userDb.append(Constantes.COLONNE_MDP, util.getMotDePasse());
+		collection.insertOne(userDb);
 		return util;
 	}
-	
-	public void createTables(){
-		DBCollection collection = dataBase.getCollection(Constantes.TABLE_USER);
-		collection.createIndex(Constantes.COLONNE_EMAIL);
-		collection.createIndex(Constantes.COLONNE_NOM);
-		collection.createIndex(Constantes.COLONNE_PRENOM);
-		collection.createIndex(Constantes.COLONNE_MDP);
-		collection.createIndex(Constantes.COLONNE_LOCALISATION);
-		collection = dataBase.getCollection(Constantes.TABLE_JOINTURE_AMIS);
-		collection.createIndex(Constantes.COLONNE_AMI_ID);
-		collection.createIndex(Constantes.COLONNE_AMI_CIBLE);
-	}
-	
-	public void emptyTable(){
-		DBCollection collection = dataBase.getCollection(Constantes.TABLE_USER);
-		collection.drop();
+
+	public void createTables() throws MongoException{
+		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_USER);
+		collection.createIndex(new BasicDBObject(Constantes.COLONNE_EMAIL, 1));
+		collection.createIndex(new BasicDBObject(Constantes.COLONNE_NOM, 2));
+		collection.createIndex(new BasicDBObject(Constantes.COLONNE_PRENOM ,3));
+		collection.createIndex(new BasicDBObject(Constantes.COLONNE_MDP, 4));
+		collection.createIndex(new BasicDBObject(Constantes.COLONNE_LOCALISATION, 5));
+		collection = mongoDatabase.getCollection(Constantes.TABLE_JOINTURE_AMIS);
+		collection.createIndex(new BasicDBObject(Constantes.COLONNE_AMI_ID, 1));
+		collection.createIndex(new BasicDBObject(Constantes.COLONNE_AMI_CIBLE, 2));
 	}
 
+	public void emptyTable() throws MongoException{
+		mongoDatabase.getCollection(Constantes.TABLE_USER).drop();
+		mongoDatabase.getCollection(Constantes.TABLE_JOINTURE_AMIS).drop();
+	}
+	
+	/**
+	 * Permet de récupérer tous les utilisateurs de la base de données
+	 */
+	@Override
+	public List<Utilisateur> getUtilisateurs()throws MongoException {
+		logger.log(Level.INFO, "récupération des utilisateurs");
+		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_USER);
+		MongoCursor<Document> userDb = collection.find().iterator();
+		ArrayList<Utilisateur> listeUser = new ArrayList<Utilisateur>();
+		/**
+		 * Chaque next() représente un utilisateur stocké en base de données
+		 */
+		while(userDb.hasNext()){
+			Document doc = userDb.next();
+			listeUser.add(new Utilisateur(doc.getString(Constantes.COLONNE_NOM), doc.getString(Constantes.COLONNE_PRENOM), doc.getString(Constantes.COLONNE_EMAIL), doc.getString(Constantes.COLONNE_MDP)));
+		}
+		return listeUser;
+	}
+	
+	/**
+	 * Main pour tests
+	 */
 	public static void main(String[] args){
 		DaoUtilisateurInterface daoUtilisateur = new DaoUtilisateur();
 		Utilisateur user = new Utilisateur("robin", "tritan", "tristan.robin1@gmail.com", "test");
