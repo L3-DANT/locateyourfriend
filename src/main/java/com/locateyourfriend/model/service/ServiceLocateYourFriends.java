@@ -22,14 +22,22 @@ public class ServiceLocateYourFriends {
 	private ServiceLocateYourFriends(){
 		super();
 		utilisateurService = new UtilisateurService();
-		listeUtils = (ArrayList<Utilisateur>) utilisateurService.getUtilisateurs();
+		setListeUtils((ArrayList<Utilisateur>) utilisateurService.getUtilisateurs());
 	}
 	
-	public ServiceLocateYourFriends getInstance(){
+	public static ServiceLocateYourFriends getInstance(){
 		if(servicePrincipal==null){
 			servicePrincipal = new ServiceLocateYourFriends();
 		}
 		return servicePrincipal;
+	}
+
+	public ArrayList<Utilisateur> getListeUtils() {
+		return listeUtils;
+	}
+
+	public void setListeUtils(ArrayList<Utilisateur> listeUtils) {
+		this.listeUtils = listeUtils;
 	}
 
 }

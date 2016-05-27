@@ -67,7 +67,7 @@ public class UtilisateurService {
 		return user;
 	}
 
-	public Utilisateur getUtilisateur(String email){
+	public Utilisateur getUtilisateur(String email) throws MongoException{
 		Utilisateur user = daoUtilisateur.getUtilisateur(email);
 		if(user!=null){
 			logger.log(Level.INFO, "user récupéré : " + user.getNom());
@@ -120,10 +120,26 @@ public class UtilisateurService {
 		}
 	}
 
-	public boolean authentification(String email, String motDePasse){
-		Utilisateur user = this.getUtilisateur(email);
-		String userMdp = user.getMotDePasse();
-		return userMdp.equals(motDePasse);
+	public Utilisateur authentification(String email, String motDePasse) throws ServiceException{
+		Utilisateur utilisateur = null;
+		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
+			if(user.getEmail().equals(email)){
+				utilisateur = user;
+			}
+		}
+		if(utilisateur == null){
+			String message = "the user does not exist";
+			logger.log(Level.WARNING, message);
+			throw new ServiceException(message, ServiceException.ErrorNumbers.EMAIL_UTILISE);
+		}else{
+			String userMdp = utilisateur.getMotDePasse();
+			if(userMdp.equals(motDePasse)){
+				return utilisateur;
+			}
+			String message = "The password is not valid";
+			logger.log(Level.WARNING, message);
+			throw new ServiceException(message, ServiceException.ErrorNumbers.UTILISATEUR);
+		}
 	}
 
 	public List<Utilisateur> getUtilisateurs(){
