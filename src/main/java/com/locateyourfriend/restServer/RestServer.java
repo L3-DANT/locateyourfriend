@@ -53,7 +53,10 @@ public class RestServer{
 	 * 
 	 * Si une exception est lev�e lors de l'insertion en base, un logg est enregistr� au niveau de l'utilisateurService.
 	 * Un message d'erreur est ensuite envoy� � l'utilisateur
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 	 * @param message
 	 * @return
 	 */
@@ -62,20 +65,30 @@ public class RestServer{
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON) 
 	public String inscription(String message){
+<<<<<<< HEAD
 
 		logger.log(Level.INFO, "message re�us : " + message);
 
+=======
+		logger.log(Level.INFO, "message re�us : " + message);
+>>>>>>> master
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		try{
 			u = utilisateurService.insertUser(u.getNom(), u.getPrenom(), u.getEmail(), u.getMotDePasse());
 		} catch(MongoException e){
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 			return new Gson().toJson("L'insertion de l'utilisateur a échouée");
 		} catch (ServiceException e) {
 			return new Gson().toJson(e.getErrorMessage());
 		}
 		logger.log(Level.INFO, "retour utilisateur apr�s passage base");
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 		return new Gson().toJson(u);
 	}
 	
@@ -101,16 +114,24 @@ public class RestServer{
 
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String locationReceiving(String message){
+<<<<<<< HEAD
 
 		logger.log(Level.INFO, "message re�us : " + message);
 
+=======
+		logger.log(Level.INFO, "message re�us : " + message);
+>>>>>>> master
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		try{
 			u = utilisateurService.insertUser(u.getNom(), u.getPrenom(), u.getEmail(), u.getMotDePasse());
 		} catch(MongoException e){
+<<<<<<< HEAD
 
 			return new Gson().toJson("L'insertion de l'utilisateur a �chou�e");
 
+=======
+			return new Gson().toJson("L'insertion de l'utilisateur a �chou�e");
+>>>>>>> master
 		} catch (ServiceException e) {
 			return new Gson().toJson(e);
 		}
