@@ -69,7 +69,7 @@
 	</developers>
 
 	<build>
-		<finalName>locateyourfriend</finalName>
+		<finalName>locateyourfriendJAVA</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

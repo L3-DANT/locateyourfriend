@@ -1,14 +1,12 @@
 package com.locateyourfriend.model.service;
 
 import java.util.ArrayList;
-import java.util.Map;
-
 import com.locateyourfriend.model.Utilisateur;
 
 public class ServiceLocateYourFriends {
 	
 	/**
-	 * Le ServiceLocateYourFriends est le coeur de l'application, il gère le service utilisateur, la liste des utilisateurs.
+	 * Le ServiceLocateYourFriends est le coeur de l'application, il gï¿½re le service utilisateur, la liste des utilisateurs.
 	 * 
 	 * C'est un singleton
 	 */

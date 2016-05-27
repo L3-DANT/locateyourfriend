@@ -32,7 +32,9 @@ public class MyLogger {
 			try {
 				//Ici on indique au FileHandler le nom et l'emplacement du fichier log
 				//Il le creera si il n'existe pas
-				fh = new FileHandler("logs_locateyourfriend/log"+f.format(d)+".log"); 
+				System.out.println("je suis rentré dans le try");
+				fh = new FileHandler("%h/log"+f.format(d)+".log"); //%h correspond au repertoire user
+				System.out.println("log"+f.format(d)+".log");
 				logger.addHandler(fh);
 				
 				//On set le format du fichier log (Choix XML ou simple), dans notre cas, simple
