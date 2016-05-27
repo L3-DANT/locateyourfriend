@@ -34,7 +34,7 @@ public class RestServer{
 	@Path("/test")
 	public String bienvenue()
 	{	
-		String message = "Connection au serveur �tablie !";
+		String message = "Connection au serveur ï¿½tablie !";
 		logger.log(Level.INFO, message);
 		return message;
 	}
@@ -51,8 +51,8 @@ public class RestServer{
 	/**
 	 * Fonction permettant l'inscription de membres
 	 * 
-	 * Si une exception est lev�e lors de l'insertion en base, un logg est enregistr� au niveau de l'utilisateurService.
-	 * Un message d'erreur est ensuite envoy� � l'utilisateur
+	 * Si une exception est levï¿½e lors de l'insertion en base, un logg est enregistrï¿½ au niveau de l'utilisateurService.
+	 * Un message d'erreur est ensuite envoyï¿½ ï¿½ l'utilisateur
 	 * @param message
 	 * @return
 	 */
@@ -61,48 +61,48 @@ public class RestServer{
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON) 
 	public String inscription(String message){
-		logger.log(Level.INFO, "message re�us : " + message);
+		logger.log(Level.INFO, "message reï¿½us : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		try{
 			u = utilisateurService.insertUser(u.getNom(), u.getPrenom(), u.getEmail(), u.getMotDePasse());
 		} catch(MongoException e){
-			return new Gson().toJson("L'insertion de l'utilisateur a échouée");
+			return new Gson().toJson("L'insertion de l'utilisateur a Ã©chouÃ©e");
 		} catch (ServiceException e) {
 			return new Gson().toJson(e.getErrorMessage());
 		}
-		logger.log(Level.INFO, "retour utilisateur apr�s passage base");
+		logger.log(Level.INFO, "retour utilisateur aprï¿½s passage base");
 		return new Gson().toJson(u);
 	}
 	
 	/**
 	 * Fonction permettant l'inscription de membres
 	 * 
-	 * Si une exception est lev�e lors de l'insertion en base, un logg est enregistr� au niveau de l'utilisateurService.
-	 * Un message d'erreur est ensuite envoy� � l'utilisateur
+	 * Si une exception est levée lors de l'insertion en base, un logg est enregistré au niveau de l'utilisateurService.
+	 * Un message d'erreur est ensuite envoyé à l'utilisateur
 	 * @param message
 	 * @return
 	 */
 	@POST
 	@Path("/authentification")
 	@Produces(MediaType.APPLICATION_JSON)
-<<<<<<< HEAD
+
 	@Consumes(MediaType.APPLICATION_JSON) 
 	public String authentification(String message){
-		logger.log(Level.INFO, "message re�us : " + message);
+		logger.log(Level.INFO, "message reçus : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		try {
 			u = utilisateurService.authentification(u.getEmail(), u.getMotDePasse());
 			return new Gson().toJson(u);
-=======
+
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String locationReceiving(String message){
-		logger.log(Level.INFO, "message re�us : " + message);
+		logger.log(Level.INFO, "message reï¿½us : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		try{
 			u = utilisateurService.insertUser(u.getNom(), u.getPrenom(), u.getEmail(), u.getMotDePasse());
 		} catch(MongoException e){
-			return new Gson().toJson("L'insertion de l'utilisateur a �chou�e");
->>>>>>> master
+			return new Gson().toJson("L'insertion de l'utilisateur a ï¿½chouï¿½e");
+
 		} catch (ServiceException e) {
 			return new Gson().toJson(e);
 		}
@@ -112,7 +112,7 @@ public class RestServer{
 	@Path("/localisation")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void locationReceiving(String message){
-		logger.log(Level.INFO, "message re�us : " + message);
+		logger.log(Level.INFO, "message reçus : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
 			if(u.getEmail().equals(user.getEmail())){
@@ -127,7 +127,7 @@ public class RestServer{
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON) 
 	public String getListAmis(String message){
-		logger.log(Level.INFO, "message re�us : " + message);
+		logger.log(Level.INFO, "message reçus : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
 			if(u.getEmail().equals(user.getEmail())){
@@ -141,7 +141,7 @@ public class RestServer{
 	@Path("/getUsers")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getUsers(String message){
-		logger.log(Level.INFO, "r�cup�rationd e tous les utilisateurs");
+		logger.log(Level.INFO, "récupérationd e tous les utilisateurs");
 		return new Gson().toJson(ServiceLocateYourFriends.getInstance().getListeUtils());
 	}
 	
