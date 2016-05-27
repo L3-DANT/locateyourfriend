@@ -6,7 +6,7 @@ import com.locateyourfriend.model.Utilisateur;
 public class ServiceLocateYourFriends {
 	
 	/**
-	 * Le ServiceLocateYourFriends est le coeur de l'application, il g�re le service utilisateur, la liste des utilisateurs.
+	 * Le ServiceLocateYourFriends est le coeur de l'application, il gère le service utilisateur, la liste des utilisateurs.
 	 * 
 	 * C'est un singleton
 	 */
@@ -23,7 +23,7 @@ public class ServiceLocateYourFriends {
 		setListeUtils((ArrayList<Utilisateur>) utilisateurService.getUtilisateurs());
 	}
 	
-	public ServiceLocateYourFriends getInstance(){
+	public static ServiceLocateYourFriends getInstance(){
 		if(servicePrincipal==null){
 			servicePrincipal = new ServiceLocateYourFriends();
 		}
