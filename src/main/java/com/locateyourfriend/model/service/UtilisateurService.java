@@ -61,23 +61,23 @@ public class UtilisateurService {
 		try{
 			user = daoUtilisateur.addUser(user);
 		}catch(MongoException e){
-			logger.log(Level.SEVERE, "l'insertion a échoué", e);
+			logger.log(Level.SEVERE, "l'insertion a Ã©chouÃ©", e);
 			throw e;
 		}
 		return user;
 	}
 
-	public Utilisateur getUtilisateur(String email){
+	public Utilisateur getUtilisateur(String email) throws MongoException{
 		Utilisateur user = daoUtilisateur.getUtilisateur(email);
 		if(user!=null){
-			logger.log(Level.INFO, "user récupéré : " + user.getNom());
+			logger.log(Level.INFO, "user rÃ©cupÃ©rÃ© : " + user.getNom());
 			ArrayList<UtilisateurDTO> listeUser = new ArrayList<UtilisateurDTO>();
 			try (MongoCursor<Document> cursor = daoAmis.getFriends(user.getEmail())) {
 				while (cursor.hasNext()) {
 					/**
-					 * Pour chaque enregistrement dans la table de jointure, si l'identifiant passé en argument
-					 * correspond à un des deux emails de l'enregistrement, on ajoute l'utilisateur possédant cet identifiant 
-					 * à la liste d'amis qui sera retournée
+					 * Pour chaque enregistrement dans la table de jointure, si l'identifiant passÃ© en argument
+					 * correspond Ã  un des deux emails de l'enregistrement, on ajoute l'utilisateur possÃ©dant cet identifiant 
+					 * Ã  la liste d'amis qui sera retournÃ©e
 					 */
 					Document doc = cursor.next();
 					if( doc.getString(Constantes.COLONNE_AMI_CIBLE).equals(email)){
@@ -89,7 +89,7 @@ public class UtilisateurService {
 				}
 			}
 			/**
-			 * création de l'objet Amis, assignation de la liste d'amis
+			 * crÃ©ation de l'objet Amis, assignation de la liste d'amis
 			 */
 			Amis amis = new Amis();
 			amis.setList(listeUser);
@@ -115,15 +115,31 @@ public class UtilisateurService {
 		try{
 			daoAmis.insertFriendship(user1.getEmail(), user2.getEmail());
 		}catch(MongoException e){
-			logger.log(Level.SEVERE, "l'insertion a échoué", e);
+			logger.log(Level.SEVERE, "l'insertion a Ã©chouÃ©", e);
 			throw e;
 		}
 	}
 
-	public boolean authentification(String email, String motDePasse){
-		Utilisateur user = this.getUtilisateur(email);
-		String userMdp = user.getMotDePasse();
-		return userMdp.equals(motDePasse);
+	public Utilisateur authentification(String email, String motDePasse) throws ServiceException{
+		Utilisateur utilisateur = null;
+		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
+			if(user.getEmail().equals(email)){
+				utilisateur = user;
+			}
+		}
+		if(utilisateur == null){
+			String message = "the user does not exist";
+			logger.log(Level.WARNING, message);
+			throw new ServiceException(message, ServiceException.ErrorNumbers.EMAIL_UTILISE);
+		}else{
+			String userMdp = utilisateur.getMotDePasse();
+			if(userMdp.equals(motDePasse)){
+				return utilisateur;
+			}
+			String message = "The password is not valid";
+			logger.log(Level.WARNING, message);
+			throw new ServiceException(message, ServiceException.ErrorNumbers.UTILISATEUR);
+		}
 	}
 
 	public List<Utilisateur> getUtilisateurs(){
