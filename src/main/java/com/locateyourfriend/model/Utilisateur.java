@@ -36,6 +36,16 @@ public class Utilisateur {
 		mesAmis = new Amis();
 	}
 	
+	public Utilisateur(String nom, String prenom, String email, String motDePasse, String longitude, String latitude){
+		super();
+		this.nom = nom;
+		this.prenom = prenom;
+		this.email = email;
+		this.motDePasse = motDePasse;
+		this.localisation = new Localisation(longitude, latitude);
+		mesAmis = new Amis();
+	}
+	
 	public Utilisateur(String nom, String prenom, String email, String motDePasse){
 		super();
 		this.nom = nom;

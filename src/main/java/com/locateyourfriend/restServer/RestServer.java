@@ -91,16 +91,24 @@ public class RestServer{
 	
 	@POST
 	@Path("/localisation")
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void locationReceiving(String message){
+	public String locationReceiving(String message){
 		logger.log(Level.INFO, "message reçus : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
 			if(u.getEmail().equals(user.getEmail())){
 				ServiceLocateYourFriends.getInstance().getListeUtils().remove(user);
 				ServiceLocateYourFriends.getInstance().getListeUtils().add(u);
+				logger.log(Level.INFO, "Modifications bdd effectuées");
+				
+				return new Gson().toJson(u);
+			}else{
+				return new Gson().toJson(u);//a changer
 			}
 		}
+		return message;//a changer
+
 	}
 	
 	@POST
