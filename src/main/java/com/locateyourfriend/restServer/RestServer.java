@@ -81,6 +81,7 @@ public class RestServer{
 	public String authentification(String message){
 		logger.log(Level.INFO, "message reçus : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
+		System.out.println("Les infos que je traite cote serveur : " + u.getEmail() + u.getMotDePasse());
 		try {
 			u = utilisateurService.authentification(u.getEmail(), u.getMotDePasse());
 			return new Gson().toJson(u);
