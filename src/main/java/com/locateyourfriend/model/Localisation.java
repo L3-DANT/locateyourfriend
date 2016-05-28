@@ -12,6 +12,17 @@ public class Localisation {
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
+	
+	public Localisation(String[] tableaulongitudeLatitude){
+		longitude = Float.parseFloat(tableaulongitudeLatitude[0]);
+		latitude = Float.parseFloat(tableaulongitudeLatitude[1]);
+		
+	}
+	
+	public Localisation(String longitudeReceiveJson, String latitudeReceiveJson){
+		longitude = Float.parseFloat(longitudeReceiveJson);
+		latitude = Float.parseFloat(latitudeReceiveJson);
+	}
 
 	public Localisation(String stringLocationToParse){
 		super();
