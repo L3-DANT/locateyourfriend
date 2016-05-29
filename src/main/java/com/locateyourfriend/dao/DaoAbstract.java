@@ -13,9 +13,9 @@ public class DaoAbstract {
 
 	Logger logger;
 	Gson gson;
-	static MongoClient mongoClient; //pitton static final MongoClient mongoClient;
+	public static MongoClient mongoClient; //pitton static final MongoClient mongoClient;
 	
-	MongoDatabase mongoDatabase;
+	public static MongoDatabase mongoDatabase;
 	
 	/**
 	 * Ce dao abstract permet d'initialiser la base de donn�e pour tous les Daos
