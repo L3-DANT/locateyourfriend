@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
 import com.locateyourfriend.model.Utilisateur;
+import com.locateyourfriend.model.UtilisateurDTO;
 import com.locateyourfriend.model.service.ServiceException;
 import com.locateyourfriend.model.service.ServiceLocateYourFriends;
 import com.locateyourfriend.model.service.UtilisateurService;
@@ -132,7 +133,7 @@ public class RestServer{
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getUsers(String message){
 		logger.log(Level.INFO, "récupérationd e tous les utilisateurs");
-		return new Gson().toJson(ServiceLocateYourFriends.getInstance().getListeUtils());
+		return new Gson().toJson(UtilisateurDTO.toUtilisateurDTO(ServiceLocateYourFriends.getInstance().getListeUtils()));
 	}
 	
 	@POST

@@ -1,5 +1,8 @@
 package com.locateyourfriend.model;
 
+import java.util.ArrayList;
+
+import com.google.gson.JsonElement;
 
 /**
  * L'utilisateur DTO est un objet qui permet de partager la localisation des utilisateurs à un autre utilisateur
@@ -90,5 +93,13 @@ public class UtilisateurDTO {
 	
 	public String toString(){
 		return prenom + " " + nom;
+	}
+
+	public static ArrayList<UtilisateurDTO> toUtilisateurDTO(ArrayList<Utilisateur> listeUtils) {
+		ArrayList<UtilisateurDTO> listeUsers = new ArrayList<UtilisateurDTO>();
+		for(Utilisateur u : listeUtils){
+			listeUsers.add(new UtilisateurDTO(u));
+		}
+		return listeUsers;
 	}
 }
