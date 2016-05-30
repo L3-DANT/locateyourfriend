@@ -122,9 +122,16 @@ public class UtilisateurService {
 
 	public Utilisateur authentification(String email, String motDePasse) throws ServiceException{
 		Utilisateur utilisateur = null;
+		daoUtilisateur.mongoDatabase.getCollection(Constantes.TABLE_USER); //Il faut recuper la nouvelle base de données apres des insertions !!!
+		logger.log(Level.SEVERE, "dans authentification : " + email + motDePasse);
 		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
+			logger.log(Level.SEVERE, "je rentre dans le for");
+			logger.log(Level.SEVERE, "dans ma boucle :" + user.getEmail() + user.getMotDePasse());
 			if(user.getEmail().equals(email)){
+				logger.log(Level.SEVERE, "je rentre dans le if");
+				logger.log(Level.SEVERE, user.getEmail() + user.getMotDePasse());
 				utilisateur = user;
+				logger.log(Level.SEVERE, utilisateur.getEmail() + utilisateur.getMotDePasse());
 			}
 		}
 		if(utilisateur == null){
