@@ -6,14 +6,13 @@ import com.google.gson.Gson;
 import com.locateyourfriend.logger.MyLogger;
 import com.locateyourfriend.model.Constantes;
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
 import com.mongodb.client.MongoDatabase;
 
 public class DaoAbstract {
 
 	Logger logger;
 	Gson gson;
-	public static MongoClient mongoClient = new MongoClient();; //pitton static final MongoClient mongoClient;
+	public static MongoClient mongoClient = new MongoClient(); //pitton static final MongoClient mongoClient;
 	
 	public static MongoDatabase mongoDatabase = mongoClient.getDatabase(Constantes.DB_ADRESS);
 	
@@ -22,16 +21,6 @@ public class DaoAbstract {
 	 */
 	public DaoAbstract(){
 		logger = MyLogger.getInstance();
-		gson = new Gson();
-		
-		//Pour le problème de conexion ouverte à chaque requete et qui bloque apres 205 connexion
-		
-		/*MongoClientOptions mongoClientOption = new MongoClientOptions.Builder()
-			    .connectionsPerHost(10)
-			    .threadsAllowedToBlockForConnectionMultiplier(10)
-			    .build();
-			mongoClient = new MongoClient("127.0.0.1", mongoClientOption);
-			mongoDatabase = mongoClient.getDatabase(Constantes.DB_ADRESS);*/
-			
+		gson = new Gson();			
 	}
 }

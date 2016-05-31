@@ -68,7 +68,38 @@ public class RestServer{
 	}
 	
 	/**
-	 * Fonction permettant l'inscription de membres
+	 * Fonction permettant la modification de membres
+	 * 
+	 * La fonction se base sur l'adresse mail comme clef primaire, c'est donc le seul champs que l'IOS empeche de modifier
+	 * 
+	 * Si l'utilisateur n'est pas trouvé en base, l'utilisateurService renvoie un exception
+	 * 
+	 * Si une exception est levÃ©e lors de l'insertion en base, un logg est enregistrÃ© au niveau de l'utilisateurService.
+	 * Un message d'erreur est ensuite envoyÃ© Ã  l'utilisateur
+	 * @param message
+	 * @return
+	 */
+	@POST
+	@Path("/modification")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON) 
+	public String modifierUtil(String message){
+		logger.log(Level.INFO, "message reçus : " + message);
+		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
+		try{
+			utilisateurService.deleteUser(u.getEmail());
+			u = utilisateurService.insertUser(u.getNom(), u.getPrenom(), u.getEmail(), u.getMotDePasse());
+		} catch(MongoException e){
+			return new Gson().toJson("La modification de l'utilisateur a échoué");
+		} catch (ServiceException e) {
+			return new Gson().toJson(e.getErrorMessage());
+		}
+		logger.log(Level.INFO, "retour utilisateur après update");
+		return new Gson().toJson(u);
+	}
+	
+	/**
+	 * Fonction permettant l'authentification de membres
 	 * 
 	 * Si une exception est levÃ©e lors de l'insertion en base, un logg est enregistrÃ© au niveau de l'utilisateurService.
 	 * Un message d'erreur est ensuite envoyÃ© Ã  l'utilisateur
@@ -91,6 +122,14 @@ public class RestServer{
 		}
 	}
 	
+	
+	/**
+	 * 
+	 * Fonction permettant de partager sa localisation au serveur pour qu'elle soit ensuite répercutée
+	 * 
+	 * @param message
+	 * @return
+	 */
 	@POST
 	@Path("/localisation")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -105,13 +144,20 @@ public class RestServer{
 				logger.log(Level.INFO, "Modifications bdd effectuÃ©es");
 				
 				return new Gson().toJson(u);
-			}else{
-				return new Gson().toJson(u);//a changer
 			}
 		}
-		return message;//a changer
+		return "utilisateur non-present";//a changer
 
 	}
+	
+	/**
+	 * Fonction permettant à l'IOS de réclamer les localisations de ses amis 
+	 * 
+	 * Les utilisateurs sont envoyés sous la forme d'utilisateurs DTO : ne possédant ni amis ni mot de passe
+	 * 
+	 * @param message
+	 * @return
+	 */
 	
 	@POST
 	@Path("/listeAmis")
@@ -122,12 +168,19 @@ public class RestServer{
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
 			if(u.getEmail().equals(user.getEmail())){
-				return new Gson().toJson(user.getMesAmis());
+				return new Gson().toJson(user);
 			}
 		}
 		return new Gson().toJson("Utilisateur inconnu");
 	}
 	
+	/**
+	 * Cette fonction permet de récupérer tous les utilisateurs
+	 * 
+	 * Les utilisateurs sont envoyés sous forme d'utilisateursDTO : ne possédant ni amis ni mot de passe
+	 * @param message
+	 * @return
+	 */
 	@POST
 	@Path("/getUsers")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -135,6 +188,14 @@ public class RestServer{
 		logger.log(Level.INFO, "rÃ©cupÃ©rationd e tous les utilisateurs");
 		return new Gson().toJson(UtilisateurDTO.toUtilisateurDTO(ServiceLocateYourFriends.getInstance().getListeUtils()));
 	}
+	
+	/**
+	 * Cette fonction permet d'ahouter en base de donnée une relation d'amitié entre deux utilisateurs
+	 * 
+	 * @param user1
+	 * @param user2
+	 * @return
+	 */
 	
 	@POST
 	@Path("/addAmis")

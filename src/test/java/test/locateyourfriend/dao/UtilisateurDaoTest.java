@@ -75,6 +75,20 @@ public class UtilisateurDaoTest {
 		}
 	}
 	
+	@Test
+	public void testDelete(){
+		try {
+			utilisateurService.insertUser("Robin", "Tristan", "tristan.robin1@gmail.com", "testAvec8caractères");
+			utilisateurService.deleteUser("tristan.robin1@gmail.com");
+			Utilisateur u = utilisateurService.getUtilisateur("tristan.robin1@gmail.com");
+			assertEquals(null, u);
+		} catch (MongoException e) {
+			e.printStackTrace();
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@After
 	public void afterTests(){
 		utilisateurService.emptyTable();
