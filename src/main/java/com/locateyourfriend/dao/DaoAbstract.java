@@ -13,9 +13,9 @@ public class DaoAbstract {
 
 	Logger logger;
 	Gson gson;
-	public static MongoClient mongoClient; //pitton static final MongoClient mongoClient;
+	public static MongoClient mongoClient = new MongoClient();; //pitton static final MongoClient mongoClient;
 	
-	public static MongoDatabase mongoDatabase;
+	public static MongoDatabase mongoDatabase = mongoClient.getDatabase(Constantes.DB_ADRESS);
 	
 	/**
 	 * Ce dao abstract permet d'initialiser la base de donn�e pour tous les Daos
@@ -23,9 +23,6 @@ public class DaoAbstract {
 	public DaoAbstract(){
 		logger = MyLogger.getInstance();
 		gson = new Gson();
-		
-		mongoClient = new MongoClient();
-		mongoDatabase = mongoClient.getDatabase(Constantes.DB_ADRESS);
 		
 		//Pour le problème de conexion ouverte à chaque requete et qui bloque apres 205 connexion
 		
