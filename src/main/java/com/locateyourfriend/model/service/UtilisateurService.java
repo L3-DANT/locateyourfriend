@@ -64,6 +64,7 @@ public class UtilisateurService {
 			logger.log(Level.SEVERE, "l'insertion a échoué", e);
 			throw e;
 		}
+		ServiceLocateYourFriends.getInstance().setListeUtils((ArrayList<Utilisateur>) this.getUtilisateurs());
 		return user;
 	}
 
@@ -100,6 +101,11 @@ public class UtilisateurService {
 
 	public void addAmis(Utilisateur user1, Utilisateur user2)throws MongoException, ServiceException{
 		String message;
+		if(daoAmis.friendshipExists(user1, user2)){
+			message="friendship relation already existing";
+			logger.log(Level.WARNING, message);
+			throw new ServiceException(message, ServiceException.ErrorNumbers.AMIS);
+		}
 		if(user1 == null || user2 == null){
 			message = "impossible to insert friendship relation, one of the user is null";
 			logger.log(Level.WARNING, message);
@@ -110,30 +116,18 @@ public class UtilisateurService {
 			logger.log(Level.WARNING, message);
 			throw new ServiceException(message, ServiceException.ErrorNumbers.EQUAL_UTILISATEUR);
 		}
-		user1.ajouterAmi(user2);
-		user2.ajouterAmi(user1);
 		try{
 			daoAmis.insertFriendship(user1.getEmail(), user2.getEmail());
 		}catch(MongoException e){
 			logger.log(Level.SEVERE, "l'insertion a échoué", e);
 			throw e;
 		}
+		ServiceLocateYourFriends.getInstance().setListeUtils((ArrayList<Utilisateur>) this.getUtilisateurs());
 	}
 
 	public Utilisateur authentification(String email, String motDePasse) throws ServiceException{
-		Utilisateur utilisateur = null;
-		daoUtilisateur.mongoDatabase.getCollection(Constantes.TABLE_USER); //Il faut recuper la nouvelle base de donn�es apres des insertions !!!
+		Utilisateur utilisateur = this.getUtilisateur(email);
 		logger.log(Level.SEVERE, "dans authentification : " + email + motDePasse);
-		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
-			logger.log(Level.SEVERE, "je rentre dans le for");
-			logger.log(Level.SEVERE, "dans ma boucle :" + user.getEmail() + user.getMotDePasse());
-			if(user.getEmail().equals(email)){
-				logger.log(Level.SEVERE, "je rentre dans le if");
-				logger.log(Level.SEVERE, user.getEmail() + user.getMotDePasse());
-				utilisateur = user;
-				logger.log(Level.SEVERE, utilisateur.getEmail() + utilisateur.getMotDePasse());
-			}
-		}
 		if(utilisateur == null){
 			String message = "the user does not exist";
 			logger.log(Level.WARNING, message);
@@ -151,7 +145,12 @@ public class UtilisateurService {
 
 	public List<Utilisateur> getUtilisateurs(){
 		List<Utilisateur> listeUtilisateurs = daoUtilisateur.getUtilisateurs();
-		return listeUtilisateurs;
+		List<Utilisateur> listeUtilisateursAvecAmis = new ArrayList<Utilisateur>();
+		for(Utilisateur u : listeUtilisateurs){
+			listeUtilisateursAvecAmis.add(this.getUtilisateur(u.getEmail()));
+		}
+		
+		return listeUtilisateursAvecAmis;
 	}
 
 	public BasicDBObject userToDataBaseObject(Utilisateur user){

@@ -22,7 +22,8 @@ public class ServiceException extends Exception{
 		MDP,
 		EMAIL_UTILISE, 
 		UTILISATEUR, 
-		EQUAL_UTILISATEUR
+		EQUAL_UTILISATEUR, 
+		AMIS
 	}
 	
 	

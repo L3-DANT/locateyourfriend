@@ -1,11 +1,13 @@
 package com.locateyourfriend.dao;
 
+import java.util.Iterator;
 import java.util.logging.Level;
 
 import org.bson.Document;
 
 import com.locateyourfriend.daoInterface.DaoAmisInterface;
 import com.locateyourfriend.model.Constantes;
+import com.locateyourfriend.model.Utilisateur;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -36,6 +38,20 @@ public class DaoAmis extends DaoAbstract implements DaoAmisInterface {
 		jointure.append(Constantes.COLONNE_AMI_CIBLE, user1Name);
 		jointure.append(Constantes.COLONNE_AMI_ID, user2Name);
 		collection.insertOne(jointure);
+	}
+
+	public boolean friendshipExists(Utilisateur user1, Utilisateur user2) {
+		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_JOINTURE_AMIS);
+		Iterator<Document> listeDocs = collection.find().iterator();
+		while(listeDocs.hasNext()){
+			Document doc = listeDocs.next();
+			if(doc.getString(Constantes.COLONNE_AMI_CIBLE).equals(user1) && doc.getString(Constantes.COLONNE_AMI_ID).equals(user2)){
+				return true;
+			} else if(doc.getString(Constantes.COLONNE_AMI_CIBLE).equals(user2) && doc.getString(Constantes.COLONNE_AMI_ID).equals(user1)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
