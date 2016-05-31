@@ -44,6 +44,7 @@ public class UtilisateurDaoTest {
 			assertEquals(0, user.getMesAmis().getList().size());
 			utilisateurService.addAmis(user,  user2);
 			utilisateurService.addAmis(user,  user3);
+			user = utilisateurService.getUtilisateur(user.getEmail());
 			assertEquals(2,user.getMesAmis().getList().size());
 			user = utilisateurService.getUtilisateur(user.getEmail());
 			Utilisateur userToTest = new Utilisateur(user.getMesAmis().getList().get(0));
