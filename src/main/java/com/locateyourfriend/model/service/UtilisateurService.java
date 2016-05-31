@@ -29,6 +29,27 @@ public class UtilisateurService {
 		daoUtilisateur = new DaoUtilisateur();
 		daoAmis = new DaoAmis();
 	}
+	
+	/**
+	 * Fonction construisant un utilisateur, elle l'envoie ensuite en base de donnée et le renvoie
+	 * 
+	 * Elle met égalent à jour la liste d'utilisateurs après insertion
+	 * 
+	 * Applique les règles de gestion de l'application :
+	 * -le nom doit etre non-null, de 2 caractères minimum composé de lettres (majs/mins)
+	 * -le prenom doit etre non-null, de 2 caractères minimum composé de lettres (majs/mins)
+	 * -l'email doit être non-null et correspondre au regex de mails
+	 * -l'email ne doit pas être déjà utilisé
+	 * -le mot de passe doit être non-null et faire au moins 8 caractères
+	 * 
+	 * @param nom
+	 * @param prenom
+	 * @param email
+	 * @param motDePasse
+	 * @return
+	 * @throws MongoException
+	 * @throws ServiceException
+	 */
 
 	public Utilisateur insertUser(String nom, String prenom, String email, String motDePasse) throws MongoException, ServiceException{
 		String message;
@@ -68,6 +89,13 @@ public class UtilisateurService {
 		return user;
 	}
 
+	/**
+	 * Récupère l'utilisateur correspondant à l'email en argument
+	 * 
+	 * @param email
+	 * @return
+	 * @throws MongoException
+	 */
 	public Utilisateur getUtilisateur(String email) throws MongoException{
 		Utilisateur user = daoUtilisateur.getUtilisateur(email);
 		if(user!=null){
@@ -90,7 +118,7 @@ public class UtilisateurService {
 				}
 			}
 			/**
-			 * crÃ©ation de l'objet Amis, assignation de la liste d'amis
+			 * création de l'objet Amis, assignation de la liste d'amis
 			 */
 			Amis amis = new Amis();
 			amis.setList(listeUser);
@@ -99,6 +127,19 @@ public class UtilisateurService {
 		return user;
 	}
 
+	/**
+	 * Construit et ajoute une relation d'amitié en base, elle met égalent à jour la liste d'utilisateurs après insertion. 
+	 * 
+	 * Applique les règles de gestions :
+	 * -la relation d'amitié ne doit pas déjà exister
+	 * -aucun des utilisateurs ne doit être null
+	 * -les deux utilisateurs ne doivent pas être égaux (même email)
+	 * 
+	 * @param user1
+	 * @param user2
+	 * @throws MongoException
+	 * @throws ServiceException
+	 */
 	public void addAmis(Utilisateur user1, Utilisateur user2)throws MongoException, ServiceException{
 		String message;
 		if(daoAmis.friendshipExists(user1, user2)){
@@ -125,6 +166,13 @@ public class UtilisateurService {
 		ServiceLocateYourFriends.getInstance().setListeUtils((ArrayList<Utilisateur>) this.getUtilisateurs());
 	}
 
+	/**
+	 * Fonction d'authentification, renvoie une erreur si l'utilisateur ,n'existe pas
+	 * @param email
+	 * @param motDePasse
+	 * @return
+	 * @throws ServiceException
+	 */
 	public Utilisateur authentification(String email, String motDePasse) throws ServiceException{
 		Utilisateur utilisateur = this.getUtilisateur(email);
 		logger.log(Level.SEVERE, "dans authentification : " + email + motDePasse);
@@ -143,6 +191,10 @@ public class UtilisateurService {
 		}
 	}
 
+	/**Fonction de récupération de tous les utilisateurs
+	 * 
+	 * @return
+	 */
 	public List<Utilisateur> getUtilisateurs(){
 		List<Utilisateur> listeUtilisateurs = daoUtilisateur.getUtilisateurs();
 		List<Utilisateur> listeUtilisateursAvecAmis = new ArrayList<Utilisateur>();
@@ -153,6 +205,11 @@ public class UtilisateurService {
 		return listeUtilisateursAvecAmis;
 	}
 
+	/**
+	 * Fonction permettant de transformer un utilisateur en objet BasicDBObject prêt à être inséré en base de données
+	 * @param user
+	 * @return
+	 */
 	public BasicDBObject userToDataBaseObject(Utilisateur user){
 		BasicDBObject userDb = new BasicDBObject();
 		userDb.append(Constantes.COLONNE_EMAIL, user.getEmail());
@@ -163,7 +220,25 @@ public class UtilisateurService {
 		return userDb;
 	}
 
+	
+	/**
+	 * Vide les deux tables de l'application
+	 */
 	public void emptyTable() {
 		daoUtilisateur.emptyTable();
+	}
+
+	/**
+	 * Supprime un utilisateur (utilisé uniquement lors de la modification d'un user)
+	 * @param email
+	 * @throws ServiceException
+	 */
+	public void deleteUser(String email) throws ServiceException {
+		if(daoUtilisateur.getUtilisateur(email)==null){
+			String message = "the user does not exist, impossible to update";
+			logger.log(Level.WARNING, message);
+			throw new ServiceException(message, ServiceException.ErrorNumbers.UTILISATEUR);
+		}
+		daoUtilisateur.remove(email);
 	}
 }

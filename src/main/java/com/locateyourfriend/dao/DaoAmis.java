@@ -40,6 +40,12 @@ public class DaoAmis extends DaoAbstract implements DaoAmisInterface {
 		collection.insertOne(jointure);
 	}
 
+	/**
+	 * Permet de vérifier l'existence d'une relation d'amitié entre deux membres
+	 * @param user1
+	 * @param user2
+	 * @return
+	 */
 	public boolean friendshipExists(Utilisateur user1, Utilisateur user2) {
 		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_JOINTURE_AMIS);
 		Iterator<Document> listeDocs = collection.find().iterator();

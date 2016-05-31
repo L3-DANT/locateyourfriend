@@ -2,8 +2,6 @@ package com.locateyourfriend.model;
 
 import java.util.ArrayList;
 
-import com.google.gson.JsonElement;
-
 /**
  * L'utilisateur DTO est un objet qui permet de partager la localisation des utilisateurs à un autre utilisateur
  * sans partager d'informations sensibles telles que le mot de passe 

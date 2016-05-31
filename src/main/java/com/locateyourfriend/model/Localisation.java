@@ -13,6 +13,11 @@ public class Localisation {
 		this.latitude = latitude;
 	}
 	
+	/**
+	 * Permet d'instancier une localisation à partir d'un string ayant la structure adaptée
+	 * 
+	 * @param tableaulongitudeLatitude
+	 */
 	public Localisation(String[] tableaulongitudeLatitude){
 		longitude = Float.parseFloat(tableaulongitudeLatitude[0]);
 		latitude = Float.parseFloat(tableaulongitudeLatitude[1]);

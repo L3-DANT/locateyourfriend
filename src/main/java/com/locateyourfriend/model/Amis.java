@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Amis {
+	
+	/**
+	 * Objet contenant la liste d'amis
+	 */
 	private List<UtilisateurDTO> listUtil;
 	
 	public Amis(){

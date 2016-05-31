@@ -59,7 +59,11 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		collection.insertOne(userDb);
 		return util;
 	}
-
+	
+	/**
+	 * Crée les tables
+	 * @throws MongoException
+	 */
 	public void createTables() throws MongoException{
 		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_USER);
 		collection.createIndex(new BasicDBObject(Constantes.COLONNE_EMAIL, 1));
@@ -72,6 +76,9 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		collection.createIndex(new BasicDBObject(Constantes.COLONNE_AMI_CIBLE, 2));
 	}
 
+	/**
+	 * Vide les tables
+	 */
 	public void emptyTable() throws MongoException{
 		mongoDatabase.getCollection(Constantes.TABLE_USER).drop();
 		mongoDatabase.getCollection(Constantes.TABLE_JOINTURE_AMIS).drop();
@@ -110,5 +117,17 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 		else{
 			MyLogger.getInstance().log(Level.INFO, "test raté");
 		}
+	}
+
+	/**
+	 * Permet de supprimer un utilisateur
+	 * @param email
+	 */
+	public void remove(String email) {
+		logger.log(Level.INFO, "suppression de l'utilisateur : " + email);
+		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_USER);
+		BasicDBObject query = new BasicDBObject();
+		query.append(Constantes.COLONNE_EMAIL, email);
+		collection.deleteOne(query);
 	}
 }
