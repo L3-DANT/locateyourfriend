@@ -129,4 +129,8 @@ public class Utilisateur {
 	public void setLocalisation(String localisation) {
 		this.localisation = new Localisation(localisation);
 	}
+
+	public void setLocalisation(Localisation localisationObject) {
+		this.localisation = localisationObject;
+	}
 }
