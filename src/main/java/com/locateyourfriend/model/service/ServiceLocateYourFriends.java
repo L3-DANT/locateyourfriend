@@ -37,5 +37,14 @@ public class ServiceLocateYourFriends {
 	public void setListeUtils(ArrayList<Utilisateur> listeUtils) {
 		this.listeUtils = listeUtils;
 	}
+	
+	public Utilisateur getUtilisateur(String email){
+		for(Utilisateur u : listeUtils){
+			if(u.getEmail().equals(email)){
+				return u;
+			}
+		}
+		return null;
+	}
 
 }

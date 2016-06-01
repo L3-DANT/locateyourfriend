@@ -88,7 +88,7 @@ public class DaoUtilisateur extends DaoAbstract implements DaoUtilisateurInterfa
 	 * Permet de récupérer tous les utilisateurs de la base de données
 	 */
 	@Override
-	public List<Utilisateur> getUtilisateurs()throws MongoException {
+	public ArrayList<Utilisateur> getUtilisateurs()throws MongoException {
 		logger.log(Level.INFO, "récupération des utilisateurs");
 		MongoCollection<Document> collection = mongoDatabase.getCollection(Constantes.TABLE_USER);
 		MongoCursor<Document> userDb = collection.find().iterator();

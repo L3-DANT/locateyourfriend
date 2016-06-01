@@ -110,10 +110,10 @@ public class UtilisateurService {
 					 */
 					Document doc = cursor.next();
 					if( doc.getString(Constantes.COLONNE_AMI_CIBLE).equals(email)){
-						listeUser.add(new UtilisateurDTO(daoUtilisateur.getUtilisateur(doc.getString(Constantes.COLONNE_AMI_ID))));
+						listeUser.add(new UtilisateurDTO(ServiceLocateYourFriends.getInstance().getUtilisateur(doc.getString(Constantes.COLONNE_AMI_ID))));
 					}
 					if( doc.getString(Constantes.COLONNE_AMI_ID).equals(email)){
-						listeUser.add(new UtilisateurDTO(daoUtilisateur.getUtilisateur(doc.getString(Constantes.COLONNE_AMI_CIBLE))));
+						listeUser.add(new UtilisateurDTO(ServiceLocateYourFriends.getInstance().getUtilisateur(doc.getString(Constantes.COLONNE_AMI_CIBLE))));
 					}
 				}
 			}
@@ -195,11 +195,15 @@ public class UtilisateurService {
 	 * 
 	 * @return
 	 */
-	public List<Utilisateur> getUtilisateurs(){
-		List<Utilisateur> listeUtilisateurs = daoUtilisateur.getUtilisateurs();
-		List<Utilisateur> listeUtilisateursAvecAmis = new ArrayList<Utilisateur>();
+	public ArrayList<Utilisateur> getUtilisateurs(){
+		ArrayList<Utilisateur> listeUtilisateurs = daoUtilisateur.getUtilisateurs();
+		ArrayList<Utilisateur> listeUtilisateursAvecAmis = new ArrayList<Utilisateur>();
 		for(Utilisateur u : listeUtilisateurs){
-			listeUtilisateursAvecAmis.add(this.getUtilisateur(u.getEmail()));
+			Utilisateur user = this.getUtilisateur(u.getEmail());
+			if(u.getEmail()!=null){
+				user.setLocalisation(u.getLocalisation());
+			}
+			listeUtilisateursAvecAmis.add(user);
 		}
 		
 		return listeUtilisateursAvecAmis;
@@ -216,7 +220,7 @@ public class UtilisateurService {
 		userDb.append(Constantes.COLONNE_NOM, user.getNom());
 		userDb.append(Constantes.COLONNE_PRENOM, user.getPrenom());
 		userDb.append(Constantes.COLONNE_MDP, user.getMotDePasse());
-		userDb.append(Constantes.COLONNE_LOCALISATION, user.getLocalisation().toString());
+		//userDb.append(Constantes.COLONNE_LOCALISATION, user.getLocalisation().toString());
 		return userDb;
 	}
 
