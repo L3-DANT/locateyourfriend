@@ -8,11 +8,14 @@ import org.junit.Test;
 import com.locateyourfriend.model.Utilisateur;
 import com.locateyourfriend.model.service.ServiceException;
 import com.locateyourfriend.model.service.UtilisateurService;
+import com.locateyourfriend.restServer.RestServer;
 import com.mongodb.MongoException;
 
 public class UtilisateurDaoTest {
 	
 	UtilisateurService utilisateurService;
+	
+	RestServer server = new RestServer();
 	
 	public UtilisateurDaoTest(){
 		utilisateurService = new UtilisateurService();
@@ -88,6 +91,46 @@ public class UtilisateurDaoTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void testAuthentification(){
+		try {
+			Utilisateur u = utilisateurService.insertUser("Robin", "Tristan", "tristan.robin1@gmail.com", "testAvec8caractères");
+			Utilisateur u2 = utilisateurService.authentification("tristan.robin1@gmail.com", "testAvec8caractères");
+			assertTrue(u.equals(u2));
+		} catch (MongoException e) {
+			e.printStackTrace();
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/*@Test
+	public void testServer(){
+		Utilisateur user;
+		try {
+			user = utilisateurService.insertUser("Robin", "Tristan", "tristan.robin1@gmail.com", "testAvec8caractères");
+			Utilisateur user2 = utilisateurService.insertUser("Zitoun", "Khaoula", "khaoula.zitoun@gmail.com", "testAvec8caractères");
+			Utilisateur user3 = utilisateurService.insertUser("Caurel", "Brandon", "brandon.caurel@gmail.com", "testAvec8caractères");
+			assertEquals(0, user.getMesAmis().getList().size());
+			utilisateurService.addAmis(user,  user2);
+			utilisateurService.addAmis(user,  user3);
+			user = utilisateurService.getUtilisateur(user.getEmail());
+			assertEquals(2,user.getMesAmis().getList().size());
+			user = utilisateurService.getUtilisateur(user.getEmail());
+			Utilisateur userToTest = new Utilisateur(user.getMesAmis().getList().get(0));
+			assertTrue(user2.equals(userToTest));
+			userToTest = new Utilisateur(user.getMesAmis().getList().get(1));
+			assertTrue(user3.equals(userToTest));
+			assertEquals(2, user.getMesAmis().getList().size());
+			user2 = utilisateurService.getUtilisateur(user2.getEmail());
+			assertEquals(1, user2.getMesAmis().getList().size());
+		} catch (MongoException e) {
+			e.printStackTrace();
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+	}*/
 	
 	@After
 	public void afterTests(){
