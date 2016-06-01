@@ -174,7 +174,7 @@ public class UtilisateurService {
 	 * @throws ServiceException
 	 */
 	public Utilisateur authentification(String email, String motDePasse) throws ServiceException{
-		Utilisateur utilisateur = this.getUtilisateur(email);
+		Utilisateur utilisateur = ServiceLocateYourFriends.getInstance().getUtilisateur(email);
 		logger.log(Level.SEVERE, "dans authentification : " + email + motDePasse);
 		if(utilisateur == null){
 			String message = "the user does not exist";
@@ -200,8 +200,8 @@ public class UtilisateurService {
 		ArrayList<Utilisateur> listeUtilisateursAvecAmis = new ArrayList<Utilisateur>();
 		for(Utilisateur u : listeUtilisateurs){
 			Utilisateur user = this.getUtilisateur(u.getEmail());
-			if(u.getLocalisation()!=null){
-				user.setLocalisation(u.getLocalisation());
+			if(u.getLocalisationObject()!=null){
+				user.setLocalisation(u.getLocalisationObject());
 			}
 			listeUtilisateursAvecAmis.add(user);
 		}
