@@ -45,5 +45,28 @@ public class Localisation {
 		}
 		return "";
 	}
+	
+	public static Localisation fromJSONtoLoc(String message){
+		Localisation loc = new Localisation();
+		String[] tabMessages = message.replace("{", "").replace("}", "").split(",");
+		for(String mess : tabMessages){
+			if(mess.contains("longitude")){
+				loc.setLongitude(Float.parseFloat(mess.split(":")[1]));
+			}
+			if(mess.contains("latitude")){
+				loc.setLatitude(Float.parseFloat(mess.split(":")[1]));
+			}
+		}
+		return loc;
+	}
+
+	private void setLongitude(Float longitude) {
+		this.longitude = longitude;
+		
+	}
+	private void setLatitude(Float latitude) {
+		this.latitude = latitude;
+		
+	}
 
 }

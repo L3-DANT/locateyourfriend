@@ -9,6 +9,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
+import com.locateyourfriend.model.Localisation;
 import com.locateyourfriend.model.Utilisateur;
 import com.locateyourfriend.model.UtilisateurDTO;
 import com.locateyourfriend.model.service.ServiceException;
@@ -134,12 +135,13 @@ public class RestServer{
 	@Path("/localisation")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String locationReceiving(String message){
+	public String locationReceiving(String message){  
 		logger.log(Level.INFO, "message reçus : " + message);
+		Localisation loc = Localisation.fromJSONtoLoc(message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		Utilisateur user = ServiceLocateYourFriends.getInstance().getUtilisateur(u.getEmail());
 		if(user!=null){
-			user.setLocalisation(u.getLocalisation());
+			user.setLocalisation(loc);
 			logger.log(Level.INFO, "Modifications bdd effectuées");
 			return new Gson().toJson(u);
 		}
