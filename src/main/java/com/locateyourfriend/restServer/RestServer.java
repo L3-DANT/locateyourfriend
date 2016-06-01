@@ -139,8 +139,7 @@ public class RestServer{
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
 		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
 			if(u.getEmail().equals(user.getEmail())){
-				ServiceLocateYourFriends.getInstance().getListeUtils().remove(user);
-				ServiceLocateYourFriends.getInstance().getListeUtils().add(u);
+				user.setLocalisation(u.getLocalisation());
 				logger.log(Level.INFO, "Modifications bdd effectuées");
 				
 				return new Gson().toJson(u);
