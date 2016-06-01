@@ -23,10 +23,10 @@ import java.util.logging.Logger;
 
 @Path("/appli")
 public class RestServer{
-	
+
 	Logger logger = MyLogger.getInstance();
 	UtilisateurService utilisateurService = new UtilisateurService();
-	
+
 	/**
 	 * Fonction de test
 	 * @return
@@ -39,7 +39,7 @@ public class RestServer{
 		logger.log(Level.INFO, message);
 		return message;
 	}
-	
+
 
 	/**
 	 * Fonction permettant l'inscription de membres
@@ -66,7 +66,7 @@ public class RestServer{
 		logger.log(Level.INFO, "retour utilisateur aprÃ¨s passage base");
 		return new Gson().toJson(u);
 	}
-	
+
 	/**
 	 * Fonction permettant la modification de membres
 	 * 
@@ -97,7 +97,7 @@ public class RestServer{
 		logger.log(Level.INFO, "retour utilisateur après update");
 		return new Gson().toJson(u);
 	}
-	
+
 	/**
 	 * Fonction permettant l'authentification de membres
 	 * 
@@ -121,8 +121,8 @@ public class RestServer{
 			return new Gson().toJson(e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * Fonction permettant de partager sa localisation au serveur pour qu'elle soit ensuite répercutée
@@ -137,27 +137,25 @@ public class RestServer{
 	public String locationReceiving(String message){
 		logger.log(Level.INFO, "message reÃ§us : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
-		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
-			if(u.getEmail().equals(user.getEmail())){
-				user.setLocalisation(u.getLocalisation());
-				logger.log(Level.INFO, "Modifications bdd effectuÃ©es");
-				
-				return new Gson().toJson(u);
-			}
+		Utilisateur user = ServiceLocateYourFriends.getInstance().getUtilisateur(u.getEmail());
+		if(user!=null){
+			user.setLocalisation(u.getLocalisation());
+			logger.log(Level.INFO, "Modifications bdd effectuÃ©es");
+			return new Gson().toJson(u);
 		}
 		return "utilisateur non-present";//a changer
 
 	}
-	
+
 	/**
 	 * Fonction permettant à l'IOS de réclamer les localisations de ses amis 
 	 * 
 	 * Les utilisateurs sont envoyés sous la forme d'utilisateurs DTO : ne possédant ni amis ni mot de passe
 	 * 
 	 * @param message
-	 * @return
+	 * @return1
 	 */
-	
+
 	@POST
 	@Path("/listeAmis")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -165,14 +163,13 @@ public class RestServer{
 	public String getListAmis(String message){
 		logger.log(Level.INFO, "message reÃ§us : " + message);
 		Utilisateur u = new Gson().fromJson(message, Utilisateur.class);
-		for(Utilisateur user : ServiceLocateYourFriends.getInstance().getListeUtils()){
-			if(u.getEmail().equals(user.getEmail())){
-				return new Gson().toJson(user);
-			}
+		u = ServiceLocateYourFriends.getInstance().getUtilisateur(u.getEmail());
+		if(u!=null){
+			return new Gson().toJson(u);
 		}
 		return new Gson().toJson("Utilisateur inconnu");
 	}
-	
+
 	/**
 	 * Cette fonction permet de récupérer tous les utilisateurs
 	 * 
@@ -187,7 +184,7 @@ public class RestServer{
 		logger.log(Level.INFO, "rÃ©cupÃ©rationd e tous les utilisateurs");
 		return new Gson().toJson(UtilisateurDTO.toUtilisateurDTO(ServiceLocateYourFriends.getInstance().getListeUtils()));
 	}
-	
+
 	/**
 	 * Cette fonction permet d'ahouter en base de donnée une relation d'amitié entre deux utilisateurs
 	 * 
@@ -195,7 +192,7 @@ public class RestServer{
 	 * @param user2
 	 * @return
 	 */
-	
+
 	@POST
 	@Path("/addAmis")
 	@Consumes(MediaType.APPLICATION_JSON)

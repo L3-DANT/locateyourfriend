@@ -200,7 +200,7 @@ public class UtilisateurService {
 		ArrayList<Utilisateur> listeUtilisateursAvecAmis = new ArrayList<Utilisateur>();
 		for(Utilisateur u : listeUtilisateurs){
 			Utilisateur user = this.getUtilisateur(u.getEmail());
-			if(u.getEmail()!=null){
+			if(u.getLocalisation()!=null){
 				user.setLocalisation(u.getLocalisation());
 			}
 			listeUtilisateursAvecAmis.add(user);
